@@ -1,0 +1,185 @@
+openapi: 3.0.3
+info:
+  title: Ideka
+  version: "v1"
+servers:
+  - url: 'http://{serverName}/idke-d521d/us-central1/api-api/'
+    variables:
+      serverName:
+        default: localhost:5001
+  - url: 'http://prod/idke-d521d/us-central1/api-api/'
+    description: Production server
+
+paths:
+  /api/ideas/{ideaID}/likes:
+    put:
+      summary: Like idea
+      parameters:
+        - in: path
+          name: ideaID
+          schema:
+            type: string
+          required: true
+          description: idea ID
+      responses:
+        200:
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+    delete:
+      summary: Dislike idea
+      parameters:
+        - in: path
+          name: ideaID
+          schema:
+            type: string
+          required: true
+          description: idea ID
+      responses:
+        200:
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+  
+  /api/ideas/{ideaID}:
+    get:
+      summary: Get idea
+      parameters:
+        - in: path
+          name: ideaID
+          schema:
+            type: string
+          required: true
+          description: idea ID
+
+      responses:
+        200:
+          description: Idea data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaResponse'
+
+  /api/ideas/:
+    post:
+      summary: Add idea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+
+      responses:
+        201:
+          description: Idea created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        500:
+          description: Error happened
+    get:
+      summary: Get list of ideas
+      parameters:
+        - in: query
+          name: limit
+          description: number of documents per page
+          schema:
+            type: integer
+        - in: query
+          name: from
+          description: document ID for pagination
+          schema:
+            type: string
+        - in: query
+          name: order
+          description: sort order by created at
+          schema:
+            type: string
+            enum: ["asc", "desc"]
+
+      responses:
+        200:
+          description: List of ideas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeasListReponse'
+
+
+components:
+  schemas:
+
+    OkResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          enum:
+            - OK
+          example: 'OK'
+    
+    IdeaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        title:
+          type: string
+        uid:
+          description: Owner user ID
+          type: string
+        createdAt:
+          type: integer
+          example: 1605549600936
+        likes:
+          type: integer
+        likers:
+          type: array
+          items:
+            type: string
+
+    IdeasListReponse:
+      type: object
+      properties:
+        next:
+          type: string
+          description: Next page url
+        total:
+          type: integer
+          description: Total number of ideas
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              description:
+                type: string
+              title:
+                type: string
+              uid:
+                description: Owner user ID
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              likes:
+                type: integer
+              likers:
+                type: array
+                items:
+                  type: string
