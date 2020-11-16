@@ -39,12 +39,12 @@ app.use(auth);
 app.use(cors());
 
 app.post('/api/ideas', async (req, res) => {
-	const {title, description} = req.body;
+  const {title, description} = req.body;
   if (title == undefined || description == undefined) {
-		return res.status(403).json({result: "error", error: {message: "no title or description"}});
+    return res.status(403).json({result: "error", error: {message: "no title or description"}});
   }
 
-	const uid = req.user.uid;
+  const uid = req.user.uid;
 
   const data = {
     uid,
@@ -53,17 +53,17 @@ app.post('/api/ideas', async (req, res) => {
     likes: 0,
     likers: [],
     createdAt: Date.now()
-	};
+  };
 
-	try {
-		await admin.firestore()
-			.collection("ideas").add(data);
+  try {
+    await admin.firestore()
+      .collection("ideas").add(data);
 
-		return res.status(201).json({result: "ok"});
-	} catch(error) {
-		console.log('Cannot add Idea', error.message);
-		return res.sendStatus(500);
-	}
+    return res.status(201).json({result: "ok"});
+  } catch(error) {
+    console.log('Cannot add Idea', error.message);
+    return res.sendStatus(500);
+  }
 });
 
 // GET /api/ideas?from={doc}&limit={limit}
@@ -113,7 +113,7 @@ app.get('/api/ideas', async (req, res) => {
 // GET /api/ideas/{ideaId}
 app.get('/api/ideas/:ideaId', async (req, res) => {
   const ideaId = req.params.ideaId;
-	const uid = req.user.uid;
+  const uid = req.user.uid;
 
   try {
     const doc = await admin.firestore().collection("ideas").doc(ideaId).get();
@@ -129,7 +129,7 @@ app.get('/api/ideas/:ideaId', async (req, res) => {
 app.put('/api/ideas/:ideaId/likes', async (req, res) => {
   const ideaId = req.params.ideaId;
   console.log(`Like for ${ideaId}`);
-	const uid = req.user.uid;
+  const uid = req.user.uid;
 
   try {
     let query = admin.firestore().collection("ideas").doc(ideaId);
@@ -148,7 +148,7 @@ app.put('/api/ideas/:ideaId/likes', async (req, res) => {
 app.delete('/api/ideas/:ideaId/likes', async (req, res) => {
   const ideaId = req.params.ideaId;
   console.log(`Dislike for ${ideaId}`);
-	const uid = req.user.uid;
+  const uid = req.user.uid;
 
   try {
     let query = admin.firestore().collection("ideas").doc(ideaId);

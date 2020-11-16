@@ -8,13 +8,13 @@ exports.refreshLikes = functions.firestore.document('/ideas/{ideaId}').onUpdate(
 
   if (newVal.likers.length > prev.likers.length) {
     return change.after.ref.update({
-        likes: admin.firestore.FieldValue.increment(1)
+      likes: admin.firestore.FieldValue.increment(1)
     })
   }
 
   if (newVal.likers.length < prev.likers.length) {
     return change.after.ref.update({
-        likes: admin.firestore.FieldValue.increment(-1)
+      likes: admin.firestore.FieldValue.increment(-1)
     })
   }
 
